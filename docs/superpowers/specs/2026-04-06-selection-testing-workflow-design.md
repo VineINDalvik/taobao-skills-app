@@ -119,14 +119,40 @@
 | 现有模块 | 新流程角色 |
 |---------|-----------|
 | OpenCLIP embedding | Step 1: 归簇引擎 |
-| UMAP + HDBSCAN/KMeans | 簇库构建 & 定期重建（MVP 后） |
+| UMAP + HDBSCAN/KMeans | 簇库构建 & 增量重建（含站外新趋势发现） |
 | `finder-cluster-rank.ts` | Step 2: 簇级排序展示 |
 | `finder-cluster-model.ts` | Step 2: S/A/B 评级（改为数据驱动） |
 | `testing-sales-predict.ts` | Step 4: 测后决策融合 |
 | 12 结构轴语义标签 | Step 2: 簇画像风格描述 |
-| 跨境聚类 skill | Layer 1: 冷启动外站信号 |
+| 跨境聚类 skill | 站外爆品采集 → 新兴趋势簇发现 |
 
 ### 需新建模块
+
+#### 4.0 两层簇架构（结构簇 + 趋势簇）
+
+簇不再是固定 12 个。分为两层：
+
+**结构簇（Structural Clusters）**：基于品类结构的稳定簇（连衣裙/T恤/裤装等），由初始 HF 数据集 + 历史积累构建，变化缓慢。对应现有 12 个簇。
+
+**趋势簇（Trend Clusters）**：由站外爆品数据和用户提交的"无匹配"商品自动催生，捕捉新兴风格趋势。生命周期短，可能几周后被吸收进结构簇或消亡。
+
+**趋势簇催生机制：**
+
+1. 用户贴图归簇时，若 `isNovelStyle = true`（与所有现有簇距离都很远），该 embedding 进入 **待归池（pending pool）**，存储到 `data/pending-embeddings/`
+2. 站外爆品数据（通过 cross-border-bestseller-cluster skill 采集的 CSV）导入时，同样先尝试归入现有簇，无法归入的进入待归池
+3. **定期扫描**（每周或待归池达到 N=20 条时触发）：对待归池跑 HDBSCAN
+   - 若发现密集子簇（min_cluster_size=5），自动创建趋势簇
+   - 趋势簇自动生成：centroid embedding、mosaic 图、临时风格标签
+   - 未成簇的散点继续留在待归池
+4. **趋势簇生命周期**：
+   - 创建时标记 `type: 'trend'`，带创建时间戳
+   - 若 30 天内有 3+ 用户对该簇内的款进行测款 → 升级为结构簇
+   - 若 60 天内无新数据流入 → 标记为"冷却"，不再在首页推荐
+
+**对 MVP 的影响：**
+- 结构簇 12 个保持不变，MVP 第一天就可用
+- 趋势簇催生是 MVP 的第 6 个功能点（不是"后续迭代"，而是核心差异化）
+- 实现复杂度可控：你已有 HDBSCAN pipeline，只需加一个 pending pool + 定期触发
 
 #### 4.1 单品归簇 API
 
@@ -137,10 +163,11 @@
 //   topClusters: Array<{
 //     clusterId: number
 //     clusterName: string
+//     clusterType: 'structural' | 'trend'
 //     similarity: number  // 0-1
 //     tier: 'S' | 'A' | 'B'
 //   }>
-//   isNovelStyle: boolean  // 所有 similarity < 0.3
+//   isNovelStyle: boolean  // 低于校准阈值 → embedding 进入待归池
 // }
 ```
 
@@ -187,9 +214,11 @@ interface ClusterStats {
 ### 数据存储（MVP）
 
 MVP 阶段使用 JSON 文件 + Zustand：
-- `lib/cluster-data.json` — 簇库（现有，只读）
+- `lib/cluster-data.json` — 结构簇库（现有，只读）
+- `lib/trend-clusters.json` — 趋势簇库（新建，由 pending pool 催生）
 - `lib/cluster-stats.json` — 簇级统计（新建，初始为锚点数据）
 - `data/test-feedback/` — 测款回流数据（append-only，每条记录一个 JSON 文件，文件名为 `{timestamp}-{uuid}.json`，避免并发写入冲突）
+- `data/pending-embeddings/` — 待归池（无法归入现有簇的 embedding，用于催生趋势簇）
 
 **并发安全：** 不使用单文件存储回流数据。每次提交写入独立文件，簇级统计定时重算（见下方触发策略）。
 
@@ -205,8 +234,8 @@ MVP 阶段使用 JSON 文件 + Zustand：
 | 改动 | 内容 |
 |-----|------|
 | 首页 | 从聊天框改为"贴图/贴链接"的单一输入 |
-| 归簇结果页 | 新页面，展示归簇结果 + 簇级洞察 |
-| Finder | 保留为二级功能（"浏览簇库"模式） |
+| 归簇结果页 | 新页面，展示归簇结果 + 簇级洞察；趋势簇标记"新趋势"标签 |
+| Finder | 保留为二级功能（"浏览簇库"模式），结构簇和趋势簇分 tab 展示 |
 | Testing | 改造为"测款跟踪"，支持多款管理 + 数据回传 |
 
 ---
@@ -222,13 +251,12 @@ MVP 阶段使用 JSON 文件 + Zustand：
 | 3 | 测款 SOP 生成 | 跟款后需要执行指南 | TestPlan 模块已有 |
 | 4 | 测款数据回传表单 | 数据闭环入口 | testing 页面表单改造 |
 | 5 | 簇级统计更新 | 回传数据要体现价值 | 新建，逻辑简单 |
+| 6 | 趋势簇催生 | 核心差异化：发现国内还没出现的新趋势 | HDBSCAN pipeline 已有，加 pending pool + 定期触发 |
 
 ### 不做（后续迭代）
 
 | 功能 | 原因 |
 |------|------|
-| 簇库动态重建 | 初期 12 个固定簇够用 |
-| 跨境数据源对接 | 冷启动用锚点判断先顶上 |
 | 批量筛款（供应商场景） | 先跑通单品流程 |
 | 差异化方向推荐 | Extension Lab 已有，先不接 |
 | 下游技能（Listing/定价/评论/广告/促销） | 等核心闭环验证后再开 |
