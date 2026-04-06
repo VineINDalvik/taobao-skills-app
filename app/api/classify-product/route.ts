@@ -4,7 +4,7 @@ import type { ClusterDataRow } from '@/lib/cluster-data-types'
 import type { TrendCluster } from '@/lib/types'
 import { formatPendingFilename } from '@/lib/pending-pool'
 import type { PendingItem } from '@/lib/pending-pool'
-import { writeFile, mkdir } from 'node:fs/promises'
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { resolveClusterModelOutput } from '@/lib/finder-cluster-model'
@@ -56,9 +56,10 @@ function loadStructuralClusters(): ClassifiableCluster[] {
     })
 }
 
-function loadTrendClusters(): ClassifiableCluster[] {
+async function loadTrendClusters(): Promise<ClassifiableCluster[]> {
   try {
-    const raw: TrendCluster[] = require('@/lib/trend-clusters.json')
+    const trendPath = join(process.cwd(), 'data', 'trend-clusters.json')
+    const raw: TrendCluster[] = JSON.parse(await readFile(trendPath, 'utf-8'))
     return raw
       .filter((t) => t.status === 'active' && t.centroidEmbedding.length > 0)
       .map((t) => ({
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
     }
 
     const structural = loadStructuralClusters()
-    const trend = loadTrendClusters()
+    const trend = await loadTrendClusters()
     const allClusters = [...structural, ...trend]
 
     const result = classifyProduct({ queryEmbedding: embedding, clusters: allClusters })

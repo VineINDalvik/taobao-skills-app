@@ -88,7 +88,7 @@ export async function POST() {
 
     const groups = greedyCluster(items)
 
-    const trendPath = join(process.cwd(), 'lib', 'trend-clusters.json')
+    const trendPath = join(process.cwd(), 'data', 'trend-clusters.json')
     let existing: TrendCluster[] = []
     try {
       existing = JSON.parse(await readFile(trendPath, 'utf-8'))

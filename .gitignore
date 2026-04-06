@@ -46,3 +46,4 @@ next-env.d.ts
 # Runtime data files (only .gitkeep is tracked)
 data/test-feedback/*.json
 data/pending-embeddings/*.json
+data/trend-clusters.json
