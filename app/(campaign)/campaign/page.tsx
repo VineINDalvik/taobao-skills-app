@@ -5,6 +5,7 @@ import { useCampaignStore } from '@/lib/campaign-store'
 import PipelineStepper from '@/components/campaign/PipelineStepper'
 import Step1Intent from '@/components/campaign/Step1Intent'
 import Step2DataProfile from '@/components/campaign/Step2DataProfile'
+import Step3Pricing from '@/components/campaign/Step3Pricing'
 
 const STATUS_STYLE: Record<string, { label: string; color: string }> = {
   draft: { label: '\u8349\u7A3F', color: 'bg-gray-700 text-gray-300' },
@@ -52,7 +53,8 @@ export default function CampaignPage() {
       {/* Step content */}
       {currentStep === 1 && <Step1Intent />}
       {currentStep === 2 && <Step2DataProfile />}
-      {currentStep > 2 && (
+      {currentStep === 3 && <Step3Pricing />}
+      {currentStep > 3 && (
         <div className="flex items-center justify-center h-40 rounded-xl border border-[#2a2a35] bg-[#1e1e28]/50">
           <span className="text-gray-500 text-sm">
             Step {currentStep} content area
