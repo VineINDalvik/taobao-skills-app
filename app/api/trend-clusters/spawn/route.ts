@@ -64,6 +64,8 @@ export async function POST() {
         ok: true,
         message: `Only ${jsonFiles.length} pending items, need ${MIN_CLUSTER_SIZE} to attempt clustering`,
         clustersSpawned: 0,
+        newClusterIds: [],
+        remainingPending: jsonFiles.length,
       })
     }
 
@@ -75,7 +77,13 @@ export async function POST() {
     }
 
     if (items.length < MIN_CLUSTER_SIZE) {
-      return Response.json({ ok: true, message: 'Not enough valid items', clustersSpawned: 0 })
+      return Response.json({
+        ok: true,
+        message: 'Not enough valid items',
+        clustersSpawned: 0,
+        newClusterIds: [],
+        remainingPending: items.length,
+      })
     }
 
     const groups = greedyCluster(items)
