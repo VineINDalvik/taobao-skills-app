@@ -1722,7 +1722,7 @@ function ClusterDetailCard({
             <span className="text-xs font-semibold">{activeRec.name}</span>
             {activeRec.trendReal && (
               <span className="flex items-center gap-0.5 text-[9px] text-green-700 bg-green-100 px-1.5 py-0.5 rounded-full font-medium">
-                <ShieldCheck className="size-2.5" />爆品罗盘验真
+                <ShieldCheck className="size-2.5" />趋势过滤引擎验真
               </span>
             )}
           </div>
