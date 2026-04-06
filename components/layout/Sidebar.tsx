@@ -97,20 +97,6 @@ export function Sidebar() {
           <span className="text-xs font-medium">商品库</span>
         </Link>
 
-        {/* Campaign */}
-        <Link
-          href="/campaign"
-          className={cn(
-            'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors',
-            pathname === '/campaign'
-              ? 'bg-primary/10 text-primary font-medium'
-              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-          )}
-        >
-          <span className="text-sm">🔥</span>
-          <span className="text-xs font-medium">大促操盘</span>
-        </Link>
-
         {/* Divider */}
         <div className="my-2 border-t border-border" />
 

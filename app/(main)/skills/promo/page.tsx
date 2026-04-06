@@ -9,17 +9,19 @@ import { ModelInsightPanel } from '@/components/shared/ModelInsightPanel'
 import { FullExportButton } from '@/components/shared/ExportButton'
 import { AlgorithmStepper } from '@/components/shared/AlgorithmStepper'
 import { MODEL_INSIGHTS } from '@/lib/model-insights'
-import { ArrowRight, Zap, CheckCircle2, LayoutGrid, CalendarRange, BarChart3, PartyPopper, Cpu } from 'lucide-react'
+import { ArrowRight, Zap, CheckCircle2, LayoutGrid, CalendarRange, BarChart3, PartyPopper, Cpu, Workflow } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts'
 import { SkillWorkspaceShell, type SkillShellTab } from '@/components/shared/SkillWorkspaceShell'
+import CampaignPipelineTab from '@/components/campaign/CampaignPipelineTab'
 
 type PageState = 'idle' | 'loading' | 'done'
 
 const PROMO_TABS_PRIMARY: SkillShellTab[] = [
   { id: 'workbench', label: '核心方案', short: '方案', icon: LayoutGrid },
+  { id: 'pipeline', label: '大促管线', short: '管线', icon: Workflow },
   { id: 'timeline', label: '执行排期', short: '排期', icon: CalendarRange },
   { id: 'scenarios', label: '情景与风险', short: '情景', icon: BarChart3 },
   { id: 'wrapup', label: '保存收尾', short: '收尾', icon: PartyPopper },
@@ -105,6 +107,8 @@ export default function PromoPage() {
   const promoHint =
     topTab === 'workbench' ? (
       <span><span className="text-foreground/80 font-medium">当前：</span>大促价、折扣与 OR 求解说明</span>
+    ) : topTab === 'pipeline' ? (
+      <span><span className="text-foreground/80 font-medium">当前：</span>6 步智能定价 → 素材生成管线</span>
     ) : topTab === 'timeline' ? (
       <span><span className="text-foreground/80 font-medium">当前：</span>预热 / 爆发 / 返场执行时间线</span>
     ) : topTab === 'scenarios' ? (
@@ -130,7 +134,12 @@ export default function PromoPage() {
       activeTab={topTab}
       onTabChange={setTopTab}
       hint={promoHint}
+      contentClassName={topTab === 'pipeline' ? 'max-w-5xl mx-auto w-full' : 'max-w-3xl mx-auto w-full'}
     >
+      {topTab === 'pipeline' ? (
+        <CampaignPipelineTab />
+      ) : (
+      <>
       <AlgorithmStepper steps={algoSteps} />
 
       {topTab === 'workbench' && (
@@ -239,6 +248,8 @@ export default function PromoPage() {
       )}
 
       {topTab === 'reference' && <ModelInsightPanel insight={insight} />}
+      </>
+      )}
     </SkillWorkspaceShell>
   )
 }
