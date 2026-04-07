@@ -40,6 +40,22 @@ export interface SupplyHint {
   note: string
 }
 
+export interface Supplier1688Result {
+  offerId: string
+  title: string
+  imageUrl: string
+  /** Unit price at MOQ tier, ex-factory (excluding shipping) */
+  price: number
+  moq: number
+  deliveryDays: number
+  supplierName: string
+  supplierScore: number
+  tradeLevel: string
+  /** Visual similarity to query image, 0-1 */
+  similarityScore: number
+  detailUrl: string
+}
+
 export interface StyleCluster {
   id: string
   name: string              // 款式名（如：法式碎花V领连衣裙）
@@ -233,6 +249,10 @@ export interface PipelineSession {
   skill4?: Skill4Output
   skill5?: Skill5Output
   skill6?: Skill6Output
+  // ── Supplier search ──
+  selectedSupplier?: Supplier1688Result | null
+  costPrice?: number | null
+  costPriceSource?: 'supplier-search' | 'manual' | null
 }
 
 // ============================================================
