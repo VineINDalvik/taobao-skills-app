@@ -249,21 +249,21 @@ export default function PromoPage() {
       )}
 
       {topTab === 'reference' && (
-      <>
-      {costPriceSource === 'supplier-search' && selectedSupplier && (
-        <DataFlowHint
-          title="供应商成本来源"
-          flows={[
-            { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 6 促销', to: '作为大促定价的利润底线基准' },
-          ]}
-          className="mb-6"
-        />
+        <>
+          {costPriceSource === 'supplier-search' && selectedSupplier && (
+            <DataFlowHint
+              title="供应商成本来源"
+              flows={[
+                { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 6 促销', to: '作为大促定价的利润底线基准' },
+              ]}
+              className="mb-6"
+            />
+          )}
+          <ModelInsightPanel insight={insight} />
+        </>
       )}
-      <ModelInsightPanel insight={insight} />
-      </>
-      )}
-      </>
-      )}
+    </>
+    )}
     </SkillWorkspaceShell>
   )
 }

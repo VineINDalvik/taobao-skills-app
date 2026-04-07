@@ -205,18 +205,18 @@ export default function AdsPage() {
       )}
 
       {topTab === 'reference' && (
-      <>
-      {costPriceSource === 'supplier-search' && selectedSupplier && (
-        <DataFlowHint
-          title="供应商成本来源"
-          flows={[
-            { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 5 推广', to: '用于计算 PPC 可承受上限 = 客单价 × CVR × (1/目标ROI)' },
-          ]}
-          className="mb-6"
-        />
-      )}
-      <ModelInsightPanel insight={insight} />
-      </>
+        <>
+          {costPriceSource === 'supplier-search' && selectedSupplier && (
+            <DataFlowHint
+              title="供应商成本来源"
+              flows={[
+                { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 5 推广', to: '用于计算 PPC 可承受上限 = 客单价 × CVR × (1/目标ROI)' },
+              ]}
+              className="mb-6"
+            />
+          )}
+          <ModelInsightPanel insight={insight} />
+        </>
       )}
     </SkillWorkspaceShell>
   )
