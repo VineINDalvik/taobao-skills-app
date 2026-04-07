@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server'
 import { searchSuppliersByImage } from '@/lib/server/ali1688-search'
 
 export const runtime = 'nodejs'
@@ -18,8 +17,8 @@ function isRateLimited(): boolean {
 
 export async function POST(req: Request) {
   if (isRateLimited()) {
-    return NextResponse.json(
-      { error: 'Too many requests. Try again in a minute.' },
+    return Response.json(
+      { ok: false, error: 'Too many requests. Try again in a minute.' },
       { status: 429 },
     )
   }
@@ -28,18 +27,18 @@ export async function POST(req: Request) {
     const body = await req.json()
     const imageUrl = body?.imageUrl
     if (!imageUrl || typeof imageUrl !== 'string') {
-      return NextResponse.json(
-        { error: 'imageUrl is required' },
+      return Response.json(
+        { ok: false, error: 'imageUrl is required' },
         { status: 400 },
       )
     }
 
     const results = await searchSuppliersByImage(imageUrl)
-    return NextResponse.json({ results })
+    return Response.json({ ok: true, results })
   } catch (err) {
     console.error('[supplier-search] route error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
+    return Response.json(
+      { ok: false, error: 'Internal server error' },
       { status: 500 },
     )
   }
