@@ -4,7 +4,7 @@ import { create } from 'zustand'
 import type {
   PipelineSession, ProductInput, StyleCluster,
   ProductRecord, OptimizationEvent, TestingOutput, TestingInput,
-  ClassifyResult,
+  ClassifyResult, Supplier1688Result,
 } from './types'
 import {
   MOCK_SKILL2, MOCK_SKILL3,
@@ -40,12 +40,28 @@ interface PipelineStore extends PipelineSession {
   classifyResult?: ClassifyResult
   setClassifyResult: (result: ClassifyResult) => void
   reset: () => void
+
+  // supplier search
+  selectedSupplier: Supplier1688Result | null
+  costPrice: number | null
+  costPriceSource: 'supplier-search' | 'manual' | null
+  selectSupplier: (supplier: Supplier1688Result | null) => void
+  setCostPriceManual: (price: number) => void
 }
 
-const initialSession: PipelineSession & { completedSkills: number[]; activeSkill: number } = {
+const initialSession: PipelineSession & {
+  completedSkills: number[]
+  activeSkill: number
+  selectedSupplier: Supplier1688Result | null
+  costPrice: number | null
+  costPriceSource: 'supplier-search' | 'manual' | null
+} = {
   productInput: { category: '', priceRange: '', styleKeywords: [] },
   completedSkills: [],
   activeSkill: 0,
+  selectedSupplier: null,
+  costPrice: null,
+  costPriceSource: null,
 }
 
 export const usePipelineStore = create<PipelineStore>((set, get) => ({
@@ -56,7 +72,8 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
     set({ productInput: input, completedSkills: [], activeSkill: 1,
           skill1: undefined, selectedStyle: undefined, skillTesting: undefined,
           skill2: undefined, skill3: undefined, skill4: undefined,
-          skill5: undefined, skill6: undefined, classifyResult: undefined }),
+          skill5: undefined, skill6: undefined, classifyResult: undefined,
+          selectedSupplier: null, costPrice: null, costPriceSource: null }),
 
   loadSession: (record) =>
     set({
@@ -72,6 +89,14 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
     })),
 
   selectStyle: (style) => set({ selectedStyle: style }),
+
+  selectSupplier: (supplier) =>
+    set(supplier
+      ? { selectedSupplier: supplier, costPrice: supplier.price, costPriceSource: 'supplier-search' }
+      : { selectedSupplier: null, costPrice: null, costPriceSource: null }),
+
+  setCostPriceManual: (price) =>
+    set({ costPrice: price, costPriceSource: 'manual', selectedSupplier: null }),
 
   runSkillTesting: (input: TestingInput) =>
     set((s) => ({
@@ -93,7 +118,7 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
     set((s) => ({
       skill3: buildSkill3({
         style: s.selectedStyle,
-        costPrice: s.skillTesting?.input?.costPrice,
+        costPrice: s.costPrice ?? s.skillTesting?.input?.costPrice,
         input: s.productInput,
       }),
       completedSkills: [...new Set([...s.completedSkills, 3])],
@@ -112,7 +137,7 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
       skill5: buildSkill5({
         style: s.selectedStyle,
         optimalPrice: s.skill3?.optimalPrice,
-        costPrice: s.skillTesting?.input?.costPrice,
+        costPrice: s.costPrice ?? s.skillTesting?.input?.costPrice,
       }),
       completedSkills: [...new Set([...s.completedSkills, 5])],
     })),
@@ -122,7 +147,7 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
       skill6: buildSkill6({
         style: s.selectedStyle,
         priceSchedule: s.skill3?.priceSchedule,
-        costPrice: s.skillTesting?.input?.costPrice,
+        costPrice: s.costPrice ?? s.skillTesting?.input?.costPrice,
         budgetSuggestion: s.skill5?.budgetSuggestion,
       }),
       completedSkills: [...new Set([...s.completedSkills, 6])],
@@ -152,6 +177,9 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
         skill4: s.skill4,
         skill5: s.skill5,
         skill6: s.skill6,
+        selectedSupplier: s.selectedSupplier,
+        costPrice: s.costPrice,
+        costPriceSource: s.costPriceSource,
       },
       changeLog: [
         {
