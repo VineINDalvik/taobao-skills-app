@@ -8,7 +8,8 @@ import type {
 } from './types'
 import {
   MOCK_SKILL2, MOCK_SKILL3,
-  MOCK_SKILL4, MOCK_SKILL5, MOCK_SKILL6, MOCK_TESTING
+  MOCK_SKILL4, MOCK_SKILL5, MOCK_SKILL6, MOCK_TESTING,
+  buildSkill2, buildSkill3, buildSkill4, buildSkill5, buildSkill6,
 } from './mock-data'
 import { MOCK_PRODUCT_HISTORY } from './mock-history'
 import RAW_CLUSTER_DATA from './cluster-data.json'
@@ -80,31 +81,50 @@ export const usePipelineStore = create<PipelineStore>((set, get) => ({
 
   runSkill2: () =>
     set((s) => ({
-      skill2: MOCK_SKILL2,
+      skill2: buildSkill2({
+        style: s.selectedStyle,
+        input: s.productInput,
+        goodKeywords: s.skill4?.goodKeywords,
+      }),
       completedSkills: [...new Set([...s.completedSkills, 2])],
     })),
 
   runSkill3: () =>
     set((s) => ({
-      skill3: MOCK_SKILL3,
+      skill3: buildSkill3({
+        style: s.selectedStyle,
+        costPrice: s.skillTesting?.input?.costPrice,
+        input: s.productInput,
+      }),
       completedSkills: [...new Set([...s.completedSkills, 3])],
     })),
 
   runSkill4: () =>
     set((s) => ({
-      skill4: MOCK_SKILL4,
+      skill4: buildSkill4({
+        style: s.selectedStyle,
+      }),
       completedSkills: [...new Set([...s.completedSkills, 4])],
     })),
 
   runSkill5: () =>
     set((s) => ({
-      skill5: MOCK_SKILL5,
+      skill5: buildSkill5({
+        style: s.selectedStyle,
+        optimalPrice: s.skill3?.optimalPrice,
+        costPrice: s.skillTesting?.input?.costPrice,
+      }),
       completedSkills: [...new Set([...s.completedSkills, 5])],
     })),
 
   runSkill6: () =>
     set((s) => ({
-      skill6: MOCK_SKILL6,
+      skill6: buildSkill6({
+        style: s.selectedStyle,
+        priceSchedule: s.skill3?.priceSchedule,
+        costPrice: s.skillTesting?.input?.costPrice,
+        budgetSuggestion: s.skill5?.budgetSuggestion,
+      }),
       completedSkills: [...new Set([...s.completedSkills, 6])],
     })),
 

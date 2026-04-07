@@ -50,7 +50,7 @@ export default function PipelineStepper({
       {/* Connecting lines */}
       {STEPS.slice(0, -1).map((_, i) => {
         const seg = getSegmentState(i, currentStep, completedSteps)
-        let bgClass = 'bg-[#2a2a35]'
+        let bgClass = 'bg-muted'
         let gradient: string | undefined
         if (seg === 'completed') bgClass = 'bg-green-500'
         if (seg === 'active') {
@@ -91,28 +91,28 @@ export default function PipelineStepper({
 
         if (state === 'completed') {
           circleStyle =
-            'border-green-500 bg-gradient-to-br from-green-900/60 to-green-800/30'
+            'border-green-500 bg-green-100'
           subLabel = '\u5DF2\u5B8C\u6210'
         } else if (state === 'active') {
           circleStyle =
-            'border-amber-400 bg-gradient-to-br from-amber-900/60 to-amber-800/30 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
+            'border-amber-400 bg-amber-100 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
           subLabel = '\u8FDB\u884C\u4E2D'
         } else {
-          circleStyle = 'border-[#2a2a35] bg-[#1e1e28]'
+          circleStyle = 'border-border bg-muted'
         }
 
         const labelColor =
           state === 'completed'
-            ? 'text-green-400'
+            ? 'text-green-600'
             : state === 'active'
-              ? 'text-amber-400 font-bold'
-              : 'text-gray-500'
+              ? 'text-amber-600 font-bold'
+              : 'text-muted-foreground'
 
         const subColor =
           state === 'completed'
             ? 'text-green-500/70'
             : state === 'active'
-              ? 'text-amber-400/70'
+              ? 'text-amber-500/70'
               : 'text-transparent'
 
         const Wrapper = state === 'active' ? motion.div : 'div'

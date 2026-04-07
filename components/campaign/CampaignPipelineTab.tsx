@@ -12,10 +12,10 @@ import Step5Assets from '@/components/campaign/Step5Assets'
 import Step6Deploy from '@/components/campaign/Step6Deploy'
 
 const STATUS_STYLE: Record<string, { label: string; color: string }> = {
-  draft: { label: '草稿', color: 'bg-gray-700 text-gray-300' },
-  running: { label: '运行中', color: 'bg-amber-900/60 text-amber-400' },
-  review: { label: '审核中', color: 'bg-amber-900/60 text-amber-400' },
-  done: { label: '已完成', color: 'bg-green-900/60 text-green-400' },
+  draft: { label: '草稿', color: 'bg-muted text-muted-foreground' },
+  running: { label: '运行中', color: 'bg-amber-100 text-amber-700 border border-amber-200' },
+  review: { label: '审核中', color: 'bg-amber-100 text-amber-700 border border-amber-200' },
+  done: { label: '已完成', color: 'bg-green-100 text-green-700 border border-green-200' },
 }
 
 export default function CampaignPipelineTab() {
@@ -37,20 +37,20 @@ export default function CampaignPipelineTab() {
   const st = STATUS_STYLE[status] ?? STATUS_STYLE.draft
 
   return (
-    <div className="rounded-2xl bg-[#0f0f14] text-[#e0e0e0] border border-border overflow-hidden -mx-1">
+    <div className="rounded-2xl border border-border overflow-hidden -mx-1">
       {/* Pipeline content */}
       <div className="p-5 space-y-5">
         {/* Top bar */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-semibold text-white">
+            <h2 className="text-base font-semibold text-foreground">
               {taskName || '大促操盘管线'}
             </h2>
             <span className={`text-xs rounded px-1.5 py-0.5 ${st.color}`}>
               {st.label}
             </span>
           </div>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-muted-foreground">
             {currentStep} / 6
           </span>
         </div>

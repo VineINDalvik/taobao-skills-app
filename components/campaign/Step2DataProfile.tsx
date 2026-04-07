@@ -152,7 +152,7 @@ export default function Step2DataProfile() {
               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-sm transition-all duration-300 ${
                 loaded
                   ? 'bg-green-900/30 border-green-500/40 text-green-400'
-                  : 'bg-[#1e1e28] border-[#2a2a35] text-gray-500'
+                  : 'bg-muted border-border text-muted-foreground'
               }`}
             >
               {loaded && <span>&#10003;</span>}
@@ -173,13 +173,13 @@ export default function Step2DataProfile() {
           >
             <div className="grid grid-cols-2 gap-3">
               {/* Card: 近7天日均销量 */}
-              <div className="bg-[#1a1a24] rounded-xl p-4 border border-[#2a2a35]">
-                <div className="text-xs text-gray-500 mb-1">近7天日均销量</div>
+              <div className="bg-card rounded-xl p-4 border border-border">
+                <div className="text-xs text-muted-foreground mb-1">近7天日均销量</div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-semibold text-white">
+                  <span className="text-2xl font-semibold text-foreground">
                     {avgQty7d.toFixed(1)}
                   </span>
-                  <span className="text-xs text-gray-500">件/天</span>
+                  <span className="text-xs text-muted-foreground">件/天</span>
                   <span className={`text-sm ${salesTrendUp ? 'text-green-400' : 'text-red-400'}`}>
                     {salesTrendUp ? '↑' : '↓'}
                   </span>
@@ -187,12 +187,12 @@ export default function Step2DataProfile() {
               </div>
 
               {/* Card: 竞品价格区间 */}
-              <div className="bg-[#1a1a24] rounded-xl p-4 border border-[#2a2a35]">
-                <div className="text-xs text-gray-500 mb-1">竞品价格区间</div>
-                <div className="text-2xl font-semibold text-white mb-2">
+              <div className="bg-card rounded-xl p-4 border border-border">
+                <div className="text-xs text-muted-foreground mb-1">竞品价格区间</div>
+                <div className="text-2xl font-semibold text-foreground mb-2">
                   ¥{minPrice} - ¥{maxPrice}
                 </div>
-                <div className="h-1.5 rounded-full overflow-hidden bg-[#2a2a35]">
+                <div className="h-1.5 rounded-full overflow-hidden bg-muted">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -204,13 +204,13 @@ export default function Step2DataProfile() {
               </div>
 
               {/* Card: 库龄/库存 */}
-              <div className="bg-[#1a1a24] rounded-xl p-4 border border-[#2a2a35]">
-                <div className="text-xs text-gray-500 mb-1">库龄 / 库存</div>
+              <div className="bg-card rounded-xl p-4 border border-border">
+                <div className="text-xs text-muted-foreground mb-1">库龄 / 库存</div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-semibold text-white">
+                  <span className="text-2xl font-semibold text-foreground">
                     {inventoryDays}
                   </span>
-                  <span className="text-xs text-gray-500">天</span>
+                  <span className="text-xs text-muted-foreground">天</span>
                   <span
                     className={`text-xs px-1.5 py-0.5 rounded ${health.color} bg-opacity-20`}
                     style={{
@@ -228,29 +228,29 @@ export default function Step2DataProfile() {
               </div>
 
               {/* Card: 历史促销效果 */}
-              <div className="bg-[#1a1a24] rounded-xl p-4 border border-[#2a2a35]">
-                <div className="text-xs text-gray-500 mb-1">历史促销效果</div>
+              <div className="bg-card rounded-xl p-4 border border-border">
+                <div className="text-xs text-muted-foreground mb-1">历史促销效果</div>
                 {lastPromo ? (
                   <>
-                    <div className="text-sm text-white mb-0.5">{lastPromo.event}</div>
+                    <div className="text-sm text-foreground mb-0.5">{lastPromo.event}</div>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-semibold text-green-400">
                         +{((lastPromo.salesLift - 1) * 100).toFixed(0)}%
                       </span>
-                      <span className="text-xs text-gray-500">销量提升</span>
+                      <span className="text-xs text-muted-foreground">销量提升</span>
                     </div>
                   </>
                 ) : (
-                  <div className="text-sm text-gray-500">暂无数据</div>
+                  <div className="text-sm text-muted-foreground">暂无数据</div>
                 )}
               </div>
             </div>
 
             {/* ---------- 3. Elasticity panel ---------- */}
-            <div className="bg-[#1a1a24] rounded-xl p-4 border border-[#2a2a35]">
+            <div className="bg-card rounded-xl p-4 border border-border">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-sm text-gray-300 font-medium">价格弹性估计</span>
-                <span className="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded text-xs">
+                <span className="text-sm text-foreground/80 font-medium">价格弹性估计</span>
+                <span className="bg-indigo-500/20 text-indigo-600 px-2 py-0.5 rounded text-xs">
                   {elasticityMethod}
                 </span>
               </div>
@@ -258,7 +258,7 @@ export default function Step2DataProfile() {
               <div className="flex items-start gap-6">
                 {/* Beta display */}
                 <div className="flex-shrink-0">
-                  <div className="text-3xl font-mono font-bold text-white">
+                  <div className="text-3xl font-mono font-bold text-foreground">
                     &beta; = {elasticityBeta.toFixed(2)}
                   </div>
                 </div>
@@ -266,7 +266,7 @@ export default function Step2DataProfile() {
                 {/* MAE training curve */}
                 <div className="flex-1 min-w-0">
                   {modelFitting ? (
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <svg
                         className="animate-spin h-4 w-4 text-indigo-400"
                         viewBox="0 0 24 24"
@@ -290,7 +290,7 @@ export default function Step2DataProfile() {
                     </div>
                   ) : (
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">MAE Training Curve</div>
+                      <div className="text-xs text-muted-foreground mb-1">MAE Training Curve</div>
                       <div style={{ width: 200, height: 80 }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={MAE_EPOCHS}>

@@ -64,7 +64,7 @@ export default function Step6Deploy() {
   return (
     <div className="space-y-6">
       {/* ── 1. Decision summary card ───────────── */}
-      <div className="bg-[#1a1a24] rounded-xl p-6 border border-green-500/30">
+      <div className="bg-card rounded-xl p-6 border border-green-500/30">
         <span className="inline-block text-green-400 text-sm font-medium mb-4">
           {'✅ 活动方案已就绪'}
         </span>
@@ -90,11 +90,11 @@ export default function Step6Deploy() {
       </div>
 
       {/* ── 2. Execution checklist (timeline) ──── */}
-      <div className="bg-[#1a1a24] rounded-xl p-6 border border-[#2a2a35]">
-        <h3 className="text-sm font-medium text-white mb-4">执行清单</h3>
+      <div className="bg-card rounded-xl p-6 border border-border">
+        <h3 className="text-sm font-medium text-foreground mb-4">执行清单</h3>
         <div className="relative ml-1.5">
           {/* Vertical line */}
-          <div className="absolute left-[5px] top-1 bottom-1 w-0.5 bg-[#2a2a35]" />
+          <div className="absolute left-[5px] top-1 bottom-1 w-0.5 bg-border" />
 
           <div className="space-y-5">
             {checklist.map((item, i) => (
@@ -104,7 +104,7 @@ export default function Step6Deploy() {
                   className={`absolute left-0 top-1 w-3 h-3 rounded-full border-2 ${
                     item.done
                       ? 'bg-green-500 border-green-500'
-                      : 'bg-[#1a1a24] border-[#2a2a35]'
+                      : 'bg-background border-border'
                   }`}
                 />
 
@@ -113,14 +113,14 @@ export default function Step6Deploy() {
                   type="checkbox"
                   checked={item.done}
                   onChange={() => handleToggleChecklist(i)}
-                  className="mt-0.5 h-4 w-4 rounded border-[#2a2a35] bg-[#12121a] text-green-500 focus:ring-green-500/30 shrink-0 cursor-pointer"
+                  className="mt-0.5 h-4 w-4 rounded border-border bg-background text-green-500 focus:ring-green-500/30 shrink-0 cursor-pointer"
                 />
 
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${item.done ? 'text-gray-400 line-through' : 'text-white'}`}>
+                  <p className={`text-sm ${item.done ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                     {item.action}
                   </p>
-                  <span className="text-xs text-gray-500">{item.scheduledDate}</span>
+                  <span className="text-xs text-muted-foreground">{item.scheduledDate}</span>
                 </div>
               </div>
             ))}
@@ -135,7 +135,7 @@ export default function Step6Deploy() {
           disabled={saved}
           className={`py-3 px-6 rounded-xl font-medium text-sm transition-colors ${
             saved
-              ? 'bg-green-900/40 text-green-400 cursor-default'
+              ? 'bg-green-100 text-green-700 cursor-default'
               : 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
           }`}
         >
@@ -144,14 +144,14 @@ export default function Step6Deploy() {
 
         <button
           onClick={() => alert('功能开发中')}
-          className="py-3 px-6 rounded-xl text-sm font-medium border border-[#2a2a35] text-gray-400 hover:text-gray-300 hover:border-gray-600 transition-colors"
+          className="py-3 px-6 rounded-xl text-sm font-medium border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
         >
           下载素材包
         </button>
 
         <button
           onClick={() => router.push('/')}
-          className="py-3 px-6 rounded-xl text-sm font-medium border border-[#2a2a35] text-gray-400 hover:text-gray-300 hover:border-gray-600 transition-colors"
+          className="py-3 px-6 rounded-xl text-sm font-medium border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
         >
           分析下一个商品
         </button>
@@ -172,9 +172,9 @@ function SummaryCell({
 }) {
   return (
     <div>
-      <p className="text-xs text-gray-500 mb-1">{label}</p>
-      <p className="text-white text-sm">{value}</p>
-      {sub && <p className="text-xs text-gray-500 mt-0.5">{sub}</p>}
+      <p className="text-xs text-muted-foreground mb-1">{label}</p>
+      <p className="text-foreground text-sm">{value}</p>
+      {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
     </div>
   )
 }

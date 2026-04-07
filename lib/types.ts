@@ -153,6 +153,19 @@ export interface ReviewIssue {
   impact: string            // 预期改善效果
 }
 
+export interface BuyerPersona {
+  id: string
+  name: string              // 人群标签（如：探险学妹、品质上班族）
+  avatar: string            // emoji avatar
+  ageRange: string          // 年龄段
+  budget: string            // 预算区间
+  coreNeeds: string[]       // 核心需求（2-3 条）
+  purchaseBehavior: string  // 购买行为摘要
+  fitScore: number          // 产品-人群匹配度 0-10
+  review: string            // AI 模拟该人群对产品的评价叙述
+  verdict: 'strong' | 'neutral' | 'weak'  // 匹配强度
+}
+
 export interface Skill4Output {
   totalReviews: number
   positiveRate: number
@@ -160,6 +173,8 @@ export interface Skill4Output {
   dimensions: Record<string, { score: number; issues: string[] }>
   actionItems: ReviewIssue[]
   goodKeywords: string[]    // 好评关键词（回传 Skill 2）
+  personas?: BuyerPersona[] // AI 用户深潜 — 买家人群画像 + 产品匹配评估
+  personaHitRate?: number   // 人群命中率（如 0.8 = 80%）
 }
 
 // Skill 5: 推广诊断

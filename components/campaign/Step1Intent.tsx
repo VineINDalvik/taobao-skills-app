@@ -27,7 +27,7 @@ const EVENT_TYPES = Object.keys(EVENT_PRESETS) as CampaignIntent['eventType'][]
 function trackStyle(value: number, min: number, max: number) {
   const pct = ((value - min) / (max - min)) * 100
   return {
-    background: `linear-gradient(to right, rgb(99 102 241) 0%, rgb(168 85 247) ${pct}%, #2a2a35 ${pct}%)`,
+    background: `linear-gradient(to right, rgb(99 102 241) 0%, rgb(168 85 247) ${pct}%, hsl(var(--border)) ${pct}%)`,
   }
 }
 
@@ -99,8 +99,8 @@ export default function Step1Intent() {
               onClick={() => selectEvent(type)}
               className={`px-4 py-1.5 rounded-full border text-sm transition-colors ${
                 selected
-                  ? 'bg-indigo-500/20 border-indigo-400 text-indigo-300'
-                  : 'bg-[#1e1e28] border-[#2a2a35] text-gray-400 hover:border-gray-500'
+                  ? 'bg-indigo-500/20 border-indigo-400 text-indigo-600'
+                  : 'bg-muted border-border text-muted-foreground hover:border-foreground/30'
               }`}
             >
               {EVENT_PRESETS[type].label}
@@ -110,30 +110,30 @@ export default function Step1Intent() {
       </div>
 
       {/* ---------- 2. Product context card ---------- */}
-      <div className="bg-[#1a1a24] rounded-xl p-4 space-y-3">
-        <div className="flex items-center gap-2 text-white font-medium">
+      <div className="bg-card rounded-xl p-4 space-y-3">
+        <div className="flex items-center gap-2 text-foreground font-medium">
           <span>👗</span>
           <span>{productName}</span>
         </div>
 
         <div className="flex flex-wrap gap-2 text-xs">
           {dailyPrice != null && (
-            <span className="bg-[#1e1e28] border border-[#2a2a35] rounded-md px-2 py-1 text-gray-300">
+            <span className="bg-muted border border-border rounded-md px-2 py-1 text-foreground/80">
               日常价 ¥{dailyPrice}
             </span>
           )}
           {costPrice != null && (
-            <span className="bg-[#1e1e28] border border-[#2a2a35] rounded-md px-2 py-1 text-gray-300">
+            <span className="bg-muted border border-border rounded-md px-2 py-1 text-foreground/80">
               成本 ¥{costPrice}
             </span>
           )}
           {elasticity != null && (
-            <span className="bg-[#1e1e28] border border-[#2a2a35] rounded-md px-2 py-1 text-gray-300">
+            <span className="bg-muted border border-border rounded-md px-2 py-1 text-foreground/80">
               弹性β {elasticity.toFixed(2)}
             </span>
           )}
           {competitorAvg != null && (
-            <span className="bg-[#1e1e28] border border-[#2a2a35] rounded-md px-2 py-1 text-gray-300">
+            <span className="bg-muted border border-border rounded-md px-2 py-1 text-foreground/80">
               竞品均价 ¥{competitorAvg}
             </span>
           )}
@@ -154,7 +154,7 @@ export default function Step1Intent() {
       <div className="space-y-4">
         {/* Margin slider */}
         <div className="flex items-center gap-4">
-          <label className="text-sm text-gray-400 whitespace-nowrap w-24">目标毛利率</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap w-24">目标毛利率</label>
           <input
             type="range"
             min={15}
@@ -165,12 +165,12 @@ export default function Step1Intent() {
             className="flex-1 appearance-none h-2 rounded-full cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
             style={trackStyle(margin, 15, 70)}
           />
-          <span className="text-xl font-semibold text-white w-16 text-right">{margin}%</span>
+          <span className="text-xl font-semibold text-foreground w-16 text-right">{margin}%</span>
         </div>
 
         {/* Discount slider */}
         <div className="flex items-center gap-4">
-          <label className="text-sm text-gray-400 whitespace-nowrap w-24">最大折扣力度</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap w-24">最大折扣力度</label>
           <input
             type="range"
             min={50}
@@ -181,7 +181,7 @@ export default function Step1Intent() {
             className="flex-1 appearance-none h-2 rounded-full cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
             style={trackStyle(discount, 50, 95)}
           />
-          <span className="text-xl font-semibold text-white w-16 text-right">
+          <span className="text-xl font-semibold text-foreground w-16 text-right">
             {(discount / 10).toFixed(1)}折
           </span>
         </div>
@@ -190,9 +190,9 @@ export default function Step1Intent() {
       {/* ---------- 4. Supplementary row ---------- */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="block text-xs text-gray-500 mb-1">库存约束</label>
+          <label className="block text-xs text-muted-foreground mb-1">库存约束</label>
           {autoInventoryDays != null ? (
-            <div className="bg-[#1e1e28] border border-[#2a2a35] rounded-lg px-3 py-2 text-white text-sm">
+            <div className="bg-muted border border-border rounded-lg px-3 py-2 text-foreground text-sm">
               约 {autoInventoryDays} 天
             </div>
           ) : (
@@ -204,22 +204,22 @@ export default function Step1Intent() {
                   setInventoryLimit(e.target.value === '' ? '' : Number(e.target.value))
                 }
                 placeholder="30"
-                className="w-full bg-[#1e1e28] border border-[#2a2a35] rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-indigo-500"
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground text-sm outline-none focus:border-indigo-500"
               />
-              <span className="text-xs text-gray-500">天</span>
+              <span className="text-xs text-muted-foreground">天</span>
             </div>
           )}
         </div>
         <div className="flex-1">
-          <label className="block text-xs text-gray-500 mb-1">销量目标</label>
+          <label className="block text-xs text-muted-foreground mb-1">销量目标</label>
           <div className="flex items-center gap-1">
             <input
               type="number"
               value={salesTarget}
               onChange={(e) => setSalesTarget(Number(e.target.value))}
-              className="w-full bg-[#1e1e28] border border-[#2a2a35] rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-indigo-500"
+              className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground text-sm outline-none focus:border-indigo-500"
             />
-            <span className="text-xs text-gray-500">件</span>
+            <span className="text-xs text-muted-foreground">件</span>
           </div>
         </div>
       </div>

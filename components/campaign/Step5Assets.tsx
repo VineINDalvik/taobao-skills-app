@@ -83,7 +83,7 @@ export default function Step5Assets() {
   const discount = `${(discountRatio * 10).toFixed(1)}折`
 
   return (
-    <div className="flex rounded-xl border border-[#2a2a35] bg-[#1e1e28]/50 overflow-hidden">
+    <div className="flex rounded-xl border border-border bg-muted/30 overflow-hidden">
       {/* ── Left side ── */}
       <div className="flex-1 p-6 space-y-5">
         {/* Sub-stepper */}
@@ -96,7 +96,7 @@ export default function Step5Assets() {
               <div key={label} className="flex items-center">
                 {i > 0 && (
                   <div
-                    className={`w-10 h-px ${isDone ? 'bg-green-500' : 'bg-[#2a2a35]'}`}
+                    className={`w-10 h-px ${isDone ? 'bg-green-500' : 'bg-border'}`}
                   />
                 )}
                 <div className="flex flex-col items-center gap-1">
@@ -106,7 +106,7 @@ export default function Step5Assets() {
                         ? 'bg-green-500'
                         : isActive
                           ? 'bg-amber-500 animate-pulse'
-                          : 'bg-gray-600'
+                          : 'bg-muted-foreground/30'
                     }`}
                   />
                   <span
@@ -114,8 +114,8 @@ export default function Step5Assets() {
                       isDone
                         ? 'text-green-400'
                         : isActive
-                          ? 'text-amber-400'
-                          : 'text-gray-500'
+                          ? 'text-amber-500'
+                          : 'text-muted-foreground'
                     }`}
                   >
                     {label}
@@ -128,19 +128,19 @@ export default function Step5Assets() {
 
         {/* Progress bar */}
         <div className="space-y-2">
-          <div className="text-sm text-gray-300">
+          <div className="text-sm text-foreground/80">
             {allDone ? (
               '素材生成完成'
             ) : (
               <>
                 正在生成素材…{' '}
-                <span className="text-gray-400">
+                <span className="text-muted-foreground">
                   已完成 {doneCount}/{items.length || 5} 张
                 </span>
               </>
             )}
           </div>
-          <div className="w-full h-2 rounded-full bg-[#2a2a35]">
+          <div className="w-full h-2 rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
               style={{ width: `${items.length > 0 ? (doneCount / items.length) * 100 : 0}%` }}
@@ -155,18 +155,18 @@ export default function Step5Assets() {
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-3 bg-[#1a1a24] rounded-xl p-3 border border-[#2a2a35]"
+                className="flex items-center gap-3 bg-card rounded-xl p-3 border border-border"
               >
                 {/* Thumbnail */}
                 <div className="w-[52px] h-[52px] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
                   {item.status === 'pending' && (
-                    <div className="w-full h-full bg-[#2a2a35] flex items-center justify-center text-gray-500 text-xs">
+                    <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground text-xs">
                       …
                     </div>
                   )}
                   {item.status === 'generating' && (
-                    <div className="w-full h-full bg-[#2a2a35] flex items-center justify-center">
-                      <span className="text-gray-400 animate-spin inline-block">⟳</span>
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground animate-spin inline-block">⟳</span>
                     </div>
                   )}
                   {item.status === 'done' && (
@@ -187,9 +187,9 @@ export default function Step5Assets() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <span className={`w-1.5 h-1.5 rounded-full ${meta.dotColor}`} />
-                    <span className="text-xs text-gray-400">{meta.label}</span>
+                    <span className="text-xs text-muted-foreground">{meta.label}</span>
                   </div>
-                  <div className="text-sm text-gray-200 truncate">{item.label}</div>
+                  <div className="text-sm text-foreground/90 truncate">{item.label}</div>
                 </div>
 
                 {/* Right: score + regenerate */}
@@ -200,7 +200,7 @@ export default function Step5Assets() {
                     </span>
                   )}
                   {item.status === 'done' && (
-                    <button className="text-gray-500 hover:text-gray-300 text-sm" title="重新生成">
+                    <button className="text-muted-foreground hover:text-foreground text-sm" title="重新生成">
                       🔄
                     </button>
                   )}
@@ -222,8 +222,8 @@ export default function Step5Assets() {
       </div>
 
       {/* ── Right side ── */}
-      <div className="w-[320px] p-6 border-l border-[#2a2a35] flex flex-col items-center">
-        <div className="text-sm text-gray-400 mb-3 self-start">📱 淘宝商品页预览</div>
+      <div className="w-[320px] p-6 border-l border-border flex flex-col items-center">
+        <div className="text-sm text-muted-foreground mb-3 self-start">📱 淘宝商品页预览</div>
         <PhonePreview
           price={confirmedPrice}
           originalPrice={dailyPrice}
@@ -231,7 +231,7 @@ export default function Step5Assets() {
           productName={taskName || '法式碎花V领连衣裙 轻奢气质'}
           doneAssetCount={doneCount}
         />
-        <div className="text-xs text-gray-500 mt-3">
+        <div className="text-xs text-muted-foreground mt-3">
           已填充 {doneCount}/{items.length || 5} 个素材位
         </div>
       </div>

@@ -111,7 +111,7 @@ export default function Step4RiskReview() {
           return (
             <div
               key={i}
-              className={`rounded-xl border border-[#2a2a35] bg-[#1a1a24] p-4 ${
+              className={`rounded-xl border border-border bg-card p-4 ${
                 isPass && !isExpanded ? 'opacity-60' : ''
               }`}
             >
@@ -137,11 +137,11 @@ export default function Step4RiskReview() {
                   </span>
                   {/* Label + detail */}
                   <div className="min-w-0">
-                    <span className="font-medium text-[#e0e0e0]">
+                    <span className="font-medium text-foreground">
                       {check.label}
                     </span>
                     {(!isPass || isExpanded) && (
-                      <p className="mt-0.5 text-sm text-gray-400 truncate">
+                      <p className="mt-0.5 text-sm text-muted-foreground truncate">
                         {check.detail}
                       </p>
                     )}
@@ -151,11 +151,11 @@ export default function Step4RiskReview() {
                 {/* Right: action buttons or resolved badge */}
                 <div className="shrink-0 ml-4">
                   {isPass ? (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {isExpanded ? '收起' : '展开'}
                     </span>
                   ) : isResolved ? (
-                    <span className="rounded bg-gray-700/50 px-2 py-0.5 text-xs text-gray-400 border border-gray-600/30">
+                    <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground border border-border">
                       已处理
                     </span>
                   ) : (
@@ -174,7 +174,7 @@ export default function Step4RiskReview() {
                           e.stopPropagation()
                           handleResolve(i)
                         }}
-                        className="rounded-lg border border-gray-600/40 px-2.5 py-1 text-xs text-gray-400 hover:bg-gray-700/30 transition-colors"
+                        className="rounded-lg border border-border px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted transition-colors"
                       >
                         忽略
                       </button>
@@ -188,20 +188,20 @@ export default function Step4RiskReview() {
       </div>
 
       {/* --- Price adjustment area --- */}
-      <div className="rounded-xl border border-[#2a2a35] bg-[#1a1a24] p-5 space-y-4">
+      <div className="rounded-xl border border-border bg-card p-5 space-y-4">
         {/* Recommended price */}
         <div className="flex items-baseline gap-2">
-          <span className="text-sm text-gray-400">推荐大促价</span>
-          <span className="text-2xl font-bold text-white">
+          <span className="text-sm text-muted-foreground">推荐大促价</span>
+          <span className="text-2xl font-bold text-foreground">
             ¥{promoPrice}
           </span>
         </div>
 
         {/* Manual input */}
         <div className="space-y-2">
-          <label className="text-sm text-gray-400">手动调整价格</label>
+          <label className="text-sm text-muted-foreground">手动调整价格</label>
           <div className="relative w-48">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
               ¥
             </span>
             <input
@@ -211,15 +211,15 @@ export default function Step4RiskReview() {
                 const v = Number(e.target.value)
                 if (!isNaN(v) && v >= 0) setAdjustedPrice(v)
               }}
-              className="w-full rounded-lg border border-[#2a2a35] bg-[#1e1e28] py-2 pl-8 pr-3 text-white outline-none focus:border-indigo-500/50"
+              className="w-full rounded-lg border border-border bg-muted py-2 pl-8 pr-3 text-foreground outline-none focus:border-indigo-500/50"
             />
           </div>
         </div>
 
         {/* Real-time metrics */}
         <div className="flex items-center gap-4">
-          <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a2a35] bg-[#1e1e28] px-3 py-1.5 text-sm">
-            <span className="text-gray-400">调整后毛利率</span>
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted px-3 py-1.5 text-sm">
+            <span className="text-muted-foreground">调整后毛利率</span>
             <span
               className={`font-medium ${
                 margin >= 0.35
@@ -232,9 +232,9 @@ export default function Step4RiskReview() {
               {(margin * 100).toFixed(1)}%
             </span>
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a2a35] bg-[#1e1e28] px-3 py-1.5 text-sm">
-            <span className="text-gray-400">预计日销</span>
-            <span className="font-medium text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted px-3 py-1.5 text-sm">
+            <span className="text-muted-foreground">预计日销</span>
+            <span className="font-medium text-foreground">
               {predictedSales.toFixed(1)} 件
             </span>
           </span>

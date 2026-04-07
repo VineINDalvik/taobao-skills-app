@@ -56,10 +56,10 @@ export default function Step3Pricing() {
           {/* Left panel: iteration log */}
           <div className="flex-1 space-y-4">
             <div>
-              <h3 className="text-white font-semibold text-base flex items-center gap-2">
+              <h3 className="text-foreground font-semibold text-base flex items-center gap-2">
                 <span>🧮</span> 约束优化求解
               </h3>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 目标毛利 ≥ {(targetMargin * 100).toFixed(0)}%，折扣下限 {(maxDiscount * 10).toFixed(0)}折
               </p>
             </div>
@@ -71,7 +71,7 @@ export default function Step3Pricing() {
                 return (
                   <div
                     key={iter.round}
-                    className={`text-xs font-mono ${isLast ? 'text-green-400' : 'text-gray-400'}`}
+                    className={`text-xs font-mono ${isLast ? 'text-green-500' : 'text-muted-foreground'}`}
                   >
                     迭代 {iter.round} → price=¥{iter.price}, 毛利 {(iter.margin * 100).toFixed(0)}%, 日销 {iter.dailySales}件, GMV ¥{iter.gmv}
                     {isLast && ' ← 收敛 ✓'}
@@ -81,7 +81,7 @@ export default function Step3Pricing() {
             </div>
 
             {/* Execution line */}
-            <div className="text-xs font-mono text-green-400/70">
+            <div className="text-xs font-mono text-green-500/70">
               ▶ 执行 策略方案生成(target_margin={targetMargin}, max_change={maxDiscount})
             </div>
           </div>
@@ -108,40 +108,40 @@ export default function Step3Pricing() {
           {/* Three-tier pricing cards */}
           <div className="grid grid-cols-3 gap-4">
             {/* Daily price */}
-            <div className="bg-[#1a1a24] rounded-xl p-5 border border-[#2a2a35]">
-              <div className="text-gray-400 text-sm mb-1">日常价</div>
-              <div className="text-2xl font-bold text-white">¥169</div>
-              <div className="text-xs text-gray-500 mt-1">维持日常</div>
+            <div className="bg-card rounded-xl p-5 border border-border">
+              <div className="text-muted-foreground text-sm mb-1">日常价</div>
+              <div className="text-2xl font-bold text-foreground">¥169</div>
+              <div className="text-xs text-muted-foreground mt-1">维持日常</div>
               <div className="mt-3 space-y-1">
-                <div className="text-xs text-gray-400">毛利 52%</div>
-                <div className="text-xs text-gray-400">预计日销 14件</div>
+                <div className="text-xs text-muted-foreground">毛利 52%</div>
+                <div className="text-xs text-muted-foreground">预计日销 14件</div>
               </div>
             </div>
 
             {/* Promo price (recommended) */}
-            <div className="relative bg-[#1a1a24] rounded-xl p-5 border border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
+            <div className="relative bg-card rounded-xl p-5 border border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.15)]">
               <span className="absolute top-3 right-3 bg-indigo-500 text-white text-xs px-2 py-0.5 rounded-full">
                 推荐
               </span>
-              <div className="text-gray-400 text-sm mb-1">大促价</div>
-              <div className="text-2xl font-bold text-white">¥139</div>
-              <div className="text-xs text-indigo-300 mt-1">推荐方案</div>
-              <div className="text-xs text-gray-500 mt-0.5">8.2折</div>
+              <div className="text-muted-foreground text-sm mb-1">大促价</div>
+              <div className="text-2xl font-bold text-foreground">¥139</div>
+              <div className="text-xs text-indigo-600 mt-1">推荐方案</div>
+              <div className="text-xs text-muted-foreground mt-0.5">8.2折</div>
               <div className="mt-3 space-y-1">
-                <div className="text-xs text-gray-400">毛利 40%</div>
-                <div className="text-xs text-gray-400">预计日销 28件</div>
+                <div className="text-xs text-muted-foreground">毛利 40%</div>
+                <div className="text-xs text-muted-foreground">预计日销 28件</div>
               </div>
             </div>
 
             {/* Floor price */}
-            <div className="bg-[#1a1a24] rounded-xl p-5 border border-red-500/30">
-              <div className="text-gray-400 text-sm mb-1">极限底价</div>
-              <div className="text-2xl font-bold text-white">¥119</div>
-              <div className="text-xs text-gray-500 mt-1">极限底线</div>
-              <div className="text-xs text-gray-500 mt-0.5">7.0折</div>
+            <div className="bg-card rounded-xl p-5 border border-red-500/30">
+              <div className="text-muted-foreground text-sm mb-1">极限底价</div>
+              <div className="text-2xl font-bold text-foreground">¥119</div>
+              <div className="text-xs text-muted-foreground mt-1">极限底线</div>
+              <div className="text-xs text-muted-foreground mt-0.5">7.0折</div>
               <div className="mt-3 space-y-1">
-                <div className="text-xs text-gray-400">毛利 29%</div>
-                <div className="text-xs text-gray-400">预计日销 38件</div>
+                <div className="text-xs text-muted-foreground">毛利 29%</div>
+                <div className="text-xs text-muted-foreground">预计日销 38件</div>
               </div>
               <div className="text-red-400 text-xs mt-2">仅限极端清仓使用</div>
             </div>
@@ -150,27 +150,27 @@ export default function Step3Pricing() {
           {/* Profit scenarios */}
           <div className="grid grid-cols-3 gap-4">
             {/* P10 Conservative */}
-            <div className="bg-[#1a1a24] rounded-lg p-4 border-l-4 border-l-red-500">
-              <div className="text-white font-bold text-sm">P10 保守</div>
-              <div className="text-gray-400 text-xs mt-2">日销 18件</div>
-              <div className="text-white text-lg font-semibold mt-1">¥12,960</div>
-              <div className="text-gray-500 text-xs mt-1">日均18件，毛利率40%，持续10天</div>
+            <div className="bg-card rounded-lg p-4 border-l-4 border-l-red-500">
+              <div className="text-foreground font-bold text-sm">P10 保守</div>
+              <div className="text-muted-foreground text-xs mt-2">日销 18件</div>
+              <div className="text-foreground text-lg font-semibold mt-1">¥12,960</div>
+              <div className="text-muted-foreground text-xs mt-1">日均18件，毛利率40%，持续10天</div>
             </div>
 
             {/* P50 Baseline */}
-            <div className="bg-[#1a1a24] rounded-lg p-4 border-l-4 border-l-blue-500">
-              <div className="text-white font-bold text-sm">P50 基准</div>
-              <div className="text-gray-400 text-xs mt-2">日销 28件</div>
-              <div className="text-white text-lg font-semibold mt-1">¥20,160</div>
-              <div className="text-gray-500 text-xs mt-1">日均28件，毛利率40%，持续10天</div>
+            <div className="bg-card rounded-lg p-4 border-l-4 border-l-blue-500">
+              <div className="text-foreground font-bold text-sm">P50 基准</div>
+              <div className="text-muted-foreground text-xs mt-2">日销 28件</div>
+              <div className="text-foreground text-lg font-semibold mt-1">¥20,160</div>
+              <div className="text-muted-foreground text-xs mt-1">日均28件，毛利率40%，持续10天</div>
             </div>
 
             {/* P90 Optimistic */}
-            <div className="bg-[#1a1a24] rounded-lg p-4 border-l-4 border-l-green-500">
-              <div className="text-white font-bold text-sm">P90 乐观</div>
-              <div className="text-gray-400 text-xs mt-2">日销 40件</div>
-              <div className="text-white text-lg font-semibold mt-1">¥28,800</div>
-              <div className="text-gray-500 text-xs mt-1">日均40件，叠加会场流量，毛利率40%</div>
+            <div className="bg-card rounded-lg p-4 border-l-4 border-l-green-500">
+              <div className="text-foreground font-bold text-sm">P90 乐观</div>
+              <div className="text-muted-foreground text-xs mt-2">日销 40件</div>
+              <div className="text-foreground text-lg font-semibold mt-1">¥28,800</div>
+              <div className="text-muted-foreground text-xs mt-1">日均40件，叠加会场流量，毛利率40%</div>
             </div>
           </div>
 

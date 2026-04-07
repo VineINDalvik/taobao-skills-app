@@ -338,6 +338,24 @@ export default function HomePage() {
         <p className="text-sm text-muted-foreground">描述选款方向，AI 帮你找准爆款、测款验证——不只爆一次，让它一直爆下去</p>
       </div>
 
+      {/* Wizard CTA */}
+      <button
+        type="button"
+        onClick={() => router.push('/skills/workflow')}
+        className="w-full rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 p-5 text-left transition-colors group"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0 group-hover:bg-primary/25 transition-colors">
+            <Sparkles className="size-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold">选款测款向导</p>
+            <p className="text-xs text-muted-foreground">粘贴图片 → AI 归簇 → 填测款数据 → 查看结果 · 4 步完成</p>
+          </div>
+          <ArrowRight className="size-4 text-primary ml-auto shrink-0" />
+        </div>
+      </button>
+
       {/* Paste image classification */}
       <ClassifySection />
 

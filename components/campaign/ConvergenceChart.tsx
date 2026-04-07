@@ -39,39 +39,39 @@ export default function ConvergenceChart({
   return (
     <div className="relative">
       {/* Formula display */}
-      <div className="absolute top-0 right-0 text-xs font-mono text-gray-500 z-10">
+      <div className="absolute top-0 right-0 text-xs font-mono text-muted-foreground z-10">
         L(p) = q(p)&middot;p &minus; &lambda;(c/p &minus; m&#8320;)
       </div>
 
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={data} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
-          <CartesianGrid stroke="#2a2a35" strokeDasharray="3 3" />
+          <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" />
           <XAxis
             dataKey="round"
             label={{ value: '迭代', position: 'insideBottomRight', offset: -5, fill: '#888' }}
-            tick={{ fill: '#888' }}
-            stroke="#2a2a35"
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            stroke="hsl(var(--border))"
           />
           <YAxis
             yAxisId="left"
             label={{ value: 'GMV ¥', angle: -90, position: 'insideLeft', fill: '#4ade80' }}
-            tick={{ fill: '#888' }}
-            stroke="#2a2a35"
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            stroke="hsl(var(--border))"
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             label={{ value: '毛利率%', angle: 90, position: 'insideRight', fill: '#f59e0b' }}
-            tick={{ fill: '#888' }}
-            stroke="#2a2a35"
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            stroke="hsl(var(--border))"
             domain={[0, 100]}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#1a1a24',
-              border: '1px solid #2a2a35',
+              backgroundColor: 'hsl(var(--card))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: 8,
-              color: '#ccc',
+              color: 'hsl(var(--foreground))',
             }}
           />
           <ReferenceLine
@@ -108,7 +108,7 @@ export default function ConvergenceChart({
           />
           <Legend
             formatter={(value: string) => (
-              <span className="text-gray-400 text-xs">{value}</span>
+              <span className="text-muted-foreground text-xs">{value}</span>
             )}
           />
         </LineChart>

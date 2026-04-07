@@ -20,7 +20,7 @@ function formatTime(iso: string): string {
 }
 
 const LEVEL_COLOR: Record<AgentLog['level'], string> = {
-  info: 'text-gray-400',
+  info: 'text-muted-foreground',
   success: 'text-green-400',
   error: 'text-red-400',
 }
@@ -50,7 +50,7 @@ export default function AgentStream({
 
   return (
     <div
-      className="border-t border-[#2a2a35] bg-[#0a0a0f] shrink-0 flex flex-col"
+      className="border-t border-border bg-muted/50 shrink-0 flex flex-col"
       style={{ height: collapsed ? 32 : 160 }}
     >
       {/* Header */}
@@ -59,12 +59,12 @@ export default function AgentStream({
         <span className="text-xs font-mono text-green-400">
           SYSTEM.AGENT_STREAM
         </span>
-        <span className="text-xs text-gray-500 ml-auto mr-2">
+        <span className="text-xs text-muted-foreground ml-auto mr-2">
           CONNECTION ESTABLISHED // {logs.length} PACKETS
         </span>
         <button
           onClick={onToggle}
-          className="text-gray-500 hover:text-gray-300 transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors"
         >
           <Icon size={14} />
         </button>
@@ -84,7 +84,7 @@ export default function AgentStream({
           ) : (
             logs.map((log, i) => (
               <div key={i} className="flex items-start gap-2 py-0.5 leading-relaxed">
-                <span className="text-gray-600 shrink-0">
+                <span className="text-muted-foreground/60 shrink-0">
                   {formatTime(log.timestamp)}
                 </span>
                 <span className="bg-green-900/50 text-green-400 rounded px-1.5 text-[10px] uppercase shrink-0">
@@ -93,7 +93,7 @@ export default function AgentStream({
                 <span className={`shrink-0 ${LEVEL_COLOR[log.level]}`}>
                   [{log.level}]
                 </span>
-                <span className="text-gray-300">{log.message}</span>
+                <span className="text-foreground/80">{log.message}</span>
               </div>
             ))
           )}

@@ -1,0 +1,4 @@
+# 先安装：pip install -r scripts/requirements-cluster.txt
+# 再安装本文件（OpenCLIP + Torch）
+torch>=2.0.0
+open-clip-torch>=2.24.0
