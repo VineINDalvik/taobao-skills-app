@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { usePipelineStore } from '@/lib/store'
@@ -11,10 +11,11 @@ import { ModelInsightPanel } from '@/components/shared/ModelInsightPanel'
 import { ExportButton } from '@/components/shared/ExportButton'
 import { FinderDataChat } from '@/components/finder/FinderDataChat'
 import { ExtensionDesignLab } from '@/components/finder/ExtensionDesignLab'
+import { SourceAndConfirm } from '@/components/finder/SourceAndConfirm'
 import { MODEL_INSIGHTS } from '@/lib/model-insights'
 import {
   ArrowRight, Zap, TrendingUp, ShieldCheck,
-  ImagePlus, CheckCircle2, Package,
+  CheckCircle2,
   LayoutGrid, BarChart3, ClipboardList, Cpu, MessageSquare, Palette,
   ChevronRight, Lock, X, Images, Globe2,
 } from 'lucide-react'
@@ -317,6 +318,7 @@ export default function FinderPage() {
   const router = useRouter()
   const { skill1, selectedStyle, runSkill1, selectStyle, productInput } = usePipelineStore()
   const classifyResult = usePipelineStore((s) => s.classifyResult)
+  const selectSupplier = usePipelineStore((s) => s.selectSupplier)
   const [queryImageEmbedding, setQueryImageEmbedding] = useState<number[] | null>(null)
   const [embedQueryStatus, setEmbedQueryStatus] = useState<'idle' | 'loading' | 'ok' | 'err'>('idle')
   const [clusterSortMode, setClusterSortMode] = useState<FinderClusterSortMode>('tier_sales')
@@ -389,7 +391,6 @@ export default function FinderPage() {
   const [selectedRefIdx, setSelectedRefIdx] = useState<number | null>(null)
   const [supplierImageUrl, setSupplierImageUrl] = useState<string>('')
   const [supplierConfirmed, setSupplierConfirmed] = useState(false)
-  const supplierFileRef = useRef<HTMLInputElement>(null)
   const insight = MODEL_INSIGHTS[1]
 
   const [clusterGalleryId, setClusterGalleryId] = useState<string | null>(null)
@@ -408,16 +409,6 @@ export default function FinderPage() {
   const activeCompetitors = activeCluster?.competitors ?? []
   const activeInternalRefs = activeCompetitors.filter((c) => !isStationOutPlatform(c.platform))
   const activeExternalRefs = activeCompetitors.filter((c) => isStationOutPlatform(c.platform))
-  const suppliers = activeCluster
-    ? activeCompetitors.slice(0, 2).map((c, i) => ({
-        img: c.image,
-        name: c.name,
-        price: competitorPriceToYuanBracket(c.price),
-        moq: i === 0 ? '30件起' : '50件起',
-        deliveryDays: i === 0 ? 3 : 5,
-      }))
-    : []
-
   const step2Unlocked = !!selectedClusterId
   const step3Unlocked = selectedRefIdx !== null
 
@@ -426,14 +417,8 @@ export default function FinderPage() {
     setSelectedRefIdx(null)
     setSupplierImageUrl('')
     setSupplierConfirmed(false)
+    selectSupplier(null)
     setActiveFlowStep(2)
-  }
-
-  const handleConfirmStyle = () => {
-    if (!activeRec) return
-    selectStyle(activeRec)
-    setSupplierConfirmed(true)
-    setTopTab('playbook')
   }
 
   if (pageState === 'idle') {
@@ -858,113 +843,18 @@ export default function FinderPage() {
       )
     }
     return (
-      <div className="space-y-5">
-        <div>
-          <h3 className="text-sm font-semibold mb-1">货源参考 + 绑定实拍</h3>
-          <p className="text-xs text-muted-foreground">1688 仅辅助；无近源仍可测款</p>
-        </div>
-        <div
-          className={cn(
-            'rounded-lg border px-2.5 py-2 text-[10px] leading-snug',
-            activeRec.supplyHint.status === 'matched' ? 'border-green-200 bg-green-50 text-green-900' :
-            activeRec.supplyHint.status === 'weak' ? 'border-amber-200 bg-amber-50 text-amber-900' :
-            'border-border bg-muted/40 text-muted-foreground',
-          )}
-        >
-          <span className="font-semibold">
-            货源提示：
-            {activeRec.supplyHint.status === 'matched' ? '匹配度较好' :
-              activeRec.supplyHint.status === 'weak' ? '弱匹配 / 需仔细对样' : '待检索'}
-          </span>
-          {' · '}{activeRec.supplyHint.note}
-        </div>
-        <div>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-2">1688 视觉近似（Demo）</p>
-            <div className="flex gap-2.5 overflow-x-auto pb-1">
-              {suppliers.map((s, si) => (
-                <div key={si} className="shrink-0 w-36 rounded-lg border border-border bg-card overflow-hidden">
-                  <div className="h-28 overflow-hidden bg-muted">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.img} alt={s.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="p-2">
-                    <p className="text-[9px] font-medium truncate">{s.name}</p>
-                    <p className="text-[9px] text-green-600 font-semibold mt-0.5">{s.price}</p>
-                    <p className="text-[9px] text-muted-foreground">{s.moq} · {s.deliveryDays}天</p>
-                  </div>
-                </div>
-              ))}
-              <div className="shrink-0 w-28 rounded-lg border-2 border-dashed border-border flex items-center justify-center text-center p-2">
-                <div>
-                  <Package className="size-5 text-muted-foreground mx-auto mb-1" />
-                <p className="text-[9px] text-muted-foreground">更多<br/>自行搜索</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-3">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-2">上传供应商或实拍主图</p>
-            {!supplierImageUrl ? (
-              <div className="space-y-2">
-              <button
-                type="button"
-                  onClick={() => supplierFileRef.current?.click()}
-                className="w-full rounded-lg border-2 border-dashed border-border hover:border-primary/40 bg-muted/20 hover:bg-primary/5 transition-colors p-5 text-center"
-                >
-                  <ImagePlus className="size-6 text-muted-foreground mx-auto mb-1.5" />
-                <p className="text-xs font-medium">点击上传</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">JPG / PNG / 截图</p>
-              </button>
-              <input
-                ref={supplierFileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) setSupplierImageUrl(URL.createObjectURL(e.target.files[0]))
-                }}
-              />
-              {suppliers[0] && (
-                <button
-                  type="button"
-                  onClick={() => setSupplierImageUrl(suppliers[0].img)}
-                  className="w-full text-[10px] text-primary hover:underline py-1"
-                >
-                  使用 Demo 示例图
-                </button>
-              )}
-              </div>
-            ) : (
-            <div className="flex items-center gap-3 flex-wrap">
-                <div className="relative w-16 h-20 rounded-lg overflow-hidden border border-green-200 shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={supplierImageUrl} alt="供应商图" className="w-full h-full object-cover" />
-                  <CheckCircle2 className="absolute top-1 right-1 size-3 text-green-600" />
-                </div>
-              <div className="flex-1 min-w-[140px]">
-                <p className="text-xs font-semibold text-green-700">已上传</p>
-                <button
-                  type="button"
-                  onClick={() => { setSupplierImageUrl(''); setSupplierConfirmed(false) }}
-                  className="text-[10px] text-muted-foreground hover:text-foreground underline mt-1"
-                >
-                  重新上传
-                </button>
-                </div>
-                {!supplierConfirmed && (
-                  <button
-                  type="button"
-                    onClick={handleConfirmStyle}
-                  className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90"
-                  >
-                    确认选款
-                    <ArrowRight className="size-3.5" />
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+      <SourceAndConfirm
+        activeRec={activeRec}
+        supplierImageUrl={supplierImageUrl}
+        setSupplierImageUrl={setSupplierImageUrl}
+        supplierConfirmed={supplierConfirmed}
+        onConfirm={() => {
+          if (!activeRec) return
+          selectStyle(activeRec)
+          setSupplierConfirmed(true)
+          setTopTab('playbook')
+        }}
+      />
     )
   }
 
