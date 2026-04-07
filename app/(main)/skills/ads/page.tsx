@@ -8,6 +8,7 @@ import { ActionBadge } from '@/components/shared/Badges'
 import { LoadingSteps } from '@/components/shared/LoadingSteps'
 import { ModelInsightPanel } from '@/components/shared/ModelInsightPanel'
 import { ExportButton } from '@/components/shared/ExportButton'
+import { DataFlowHint } from '@/components/shared/DataFlowHint'
 import { MODEL_INSIGHTS } from '@/lib/model-insights'
 import { ArrowRight, Zap, LayoutGrid, Table2, Wallet, Cpu } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -24,7 +25,7 @@ const ADS_TABS_REF: SkillShellTab[] = [{ id: 'reference', label: '模型说明',
 
 export default function AdsPage() {
   const router = useRouter()
-  const { skill5, runSkill5, selectedStyle, productInput } = usePipelineStore()
+  const { skill5, runSkill5, selectedStyle, productInput, costPriceSource, selectedSupplier } = usePipelineStore()
   const [pageState, setPageState] = useState<PageState>(skill5 ? 'done' : 'idle')
   const [topTab, setTopTab] = useState<string>('workbench')
   const insight = MODEL_INSIGHTS[5]
@@ -203,7 +204,20 @@ export default function AdsPage() {
       </>
       )}
 
-      {topTab === 'reference' && <ModelInsightPanel insight={insight} />}
+      {topTab === 'reference' && (
+      <>
+      {costPriceSource === 'supplier-search' && selectedSupplier && (
+        <DataFlowHint
+          title="供应商成本来源"
+          flows={[
+            { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 5 推广', to: '用于计算 PPC 可承受上限 = 客单价 × CVR × (1/目标ROI)' },
+          ]}
+          className="mb-6"
+        />
+      )}
+      <ModelInsightPanel insight={insight} />
+      </>
+      )}
     </SkillWorkspaceShell>
   )
 }

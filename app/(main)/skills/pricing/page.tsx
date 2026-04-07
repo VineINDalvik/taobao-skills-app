@@ -35,7 +35,7 @@ const PRICING_TABS_REF: SkillShellTab[] = [{ id: 'reference', label: '模型与�
 
 export default function PricingPage() {
   const router = useRouter()
-  const { skill3, runSkill3, selectedStyle, productInput } = usePipelineStore()
+  const { skill3, runSkill3, selectedStyle, productInput, costPriceSource, selectedSupplier } = usePipelineStore()
   const [pageState, setPageState] = useState<PageState>(skill3 ? 'done' : 'idle')
   const [topTab, setTopTab] = useState<string>('workbench')
   const insight = MODEL_INSIGHTS[3]
@@ -235,6 +235,12 @@ export default function PricingPage() {
       <DataFlowHint
         title="定价数据 → 下游步骤（含反馈循环）"
         flows={[
+          ...(costPriceSource === 'supplier-search' && selectedSupplier ? [{
+            from: '找源',
+            value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`,
+            toLabel: 'Skill 3 定价',
+            to: '作为利润优化的成本基准',
+          }] : []),
           { from: 'Skill 3', value: `最优价 ¥${optimalPrice}`, toLabel: 'Skill 6 促销', to: '活动折扣下限 = 最优价 × 80%（保本线）' },
           { from: 'Skill 3', value: '价格弹性 β', toLabel: 'Skill 5 推广', to: '出价容忍度 = CVR × 客单价 × β 系数' },
           { from: 'Skill 4 评价', value: '差评率若 >8%', toLabel: 'Skill 3', to: '系统提示可降价 ¥5–10 缓解舆论压力', loop: true },

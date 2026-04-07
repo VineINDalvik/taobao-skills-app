@@ -9,6 +9,7 @@ import { ModelInsightPanel } from '@/components/shared/ModelInsightPanel'
 import { FullExportButton } from '@/components/shared/ExportButton'
 import { AlgorithmStepper } from '@/components/shared/AlgorithmStepper'
 import { MODEL_INSIGHTS } from '@/lib/model-insights'
+import { DataFlowHint } from '@/components/shared/DataFlowHint'
 import { ArrowRight, Zap, CheckCircle2, LayoutGrid, CalendarRange, BarChart3, PartyPopper, Cpu, Workflow } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -37,7 +38,7 @@ const PHASE_CONFIG = {
 export default function PromoPage() {
   const router = useRouter()
   const { skill6, skill3, runSkill6, selectedStyle, productInput, saveCurrentProduct,
-          skill1, skill2, skill4, skill5, completedSkills } = usePipelineStore()
+          skill1, skill2, skill4, skill5, completedSkills, costPriceSource, selectedSupplier } = usePipelineStore()
   const [pageState, setPageState] = useState<PageState>(skill6 ? 'done' : 'idle')
   const [topTab, setTopTab] = useState<string>('workbench')
   const [saved, setSaved] = useState(false)
@@ -247,7 +248,20 @@ export default function PromoPage() {
       </div>
       )}
 
-      {topTab === 'reference' && <ModelInsightPanel insight={insight} />}
+      {topTab === 'reference' && (
+      <>
+      {costPriceSource === 'supplier-search' && selectedSupplier && (
+        <DataFlowHint
+          title="供应商成本来源"
+          flows={[
+            { from: '找源', value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`, toLabel: 'Skill 6 促销', to: '作为大促定价的利润底线基准' },
+          ]}
+          className="mb-6"
+        />
+      )}
+      <ModelInsightPanel insight={insight} />
+      </>
+      )}
       </>
       )}
     </SkillWorkspaceShell>

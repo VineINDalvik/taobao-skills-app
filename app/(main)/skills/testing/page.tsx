@@ -77,7 +77,7 @@ function DimBar({ label, score, vsBenchmark, isGood }: { label: string; score: n
 
 export default function TestingPage() {
   const router = useRouter()
-  const { skillTesting, runSkillTesting, selectedStyle, productInput } = usePipelineStore()
+  const { skillTesting, runSkillTesting, selectedStyle, productInput, costPriceSource, selectedSupplier } = usePipelineStore()
   const [pageState, setPageState] = useState<PageState>(skillTesting ? 'done' : 'form')
   const [form, setForm] = useState<Record<string, string>>({})
   const [feedbackSent, setFeedbackSent] = useState(false)
@@ -510,6 +510,12 @@ export default function TestingPage() {
       <DataFlowHint
         title={isScale ? '测款数据 → 放量步骤' : '换款提示'}
         flows={isScale ? [
+          ...(costPriceSource === 'supplier-search' && selectedSupplier ? [{
+            from: '找源',
+            value: `成本价 ¥${selectedSupplier.price}（${selectedSupplier.supplierName}）`,
+            toLabel: '测款',
+            to: '作为采购成本输入',
+          }] : []),
           { from: '测款', value: `采购成本 ¥${skillTesting.input.costPrice}`, toLabel: 'Skill 3 定价', to: '作为 Lagrangian 利润优化的成本约束' },
           { from: '测款', value: `实测 CVR ${skillTesting.input.cvr}%`, toLabel: 'Skill 5 推广', to: '用于直通车出价 = CPC × CVR 反推' },
           { from: '测款', value: `ROI ${dimensionScores.roiActual}`, toLabel: 'Skill 6 促销', to: '作为活动折扣的利润保护下限', loop: false },
