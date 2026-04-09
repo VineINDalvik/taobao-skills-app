@@ -18,6 +18,7 @@ export async function POST(req: Request) {
         imageDataUrl?: string
       }>
       model?: string
+      apiKey?: string
     }
 
     const prompt = body.prompt?.trim()

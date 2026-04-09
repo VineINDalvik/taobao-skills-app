@@ -14,6 +14,7 @@ type EditPayload = {
   maskImageDataUrl?: string
   referenceImages?: EditReferenceImage[]
   model?: string
+  apiKey?: string
 }
 
 type OpenAiImagesEditResponse = {
@@ -56,7 +57,7 @@ export async function runOpenAiImageEdit(payload: EditPayload) {
     background: 'opaque',
     moderation: 'auto',
     n: 1,
-  })
+  }, payload.apiKey)
 
   const first = data.data?.[0]
   const imageDataUrl = first?.b64_json ? `data:image/png;base64,${first.b64_json}` : null

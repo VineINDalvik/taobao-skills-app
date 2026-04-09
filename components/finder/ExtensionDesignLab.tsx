@@ -29,6 +29,9 @@ import {
   Library,
   X,
   Sparkles,
+  Eye,
+  EyeOff,
+  Key,
 } from 'lucide-react'
 
 /** 换色：叠色混合（Demo，非真实重绘） */
@@ -251,10 +254,21 @@ async function blobToDataUrl(blob: Blob): Promise<string> {
 }
 
 async function fetchImageAsDataUrl(src: string): Promise<string> {
-  const res = await fetch(src)
-  if (!res.ok) throw new Error(`fetch image failed: ${res.status}`)
-  const blob = await res.blob()
-  return blobToDataUrl(blob)
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      const ctx = canvas.getContext('2d')
+      if (!ctx) { reject(new Error('canvas 2d unavailable')); return }
+      ctx.drawImage(img, 0, 0)
+      resolve(canvas.toDataURL('image/png'))
+    }
+    img.onerror = () => reject(new Error('image load failed'))
+    img.src = src
+  })
 }
 
 function GeneratedResultCard({
@@ -572,6 +586,22 @@ export function ExtensionDesignLab({
   })
   const [imageProvider, setImageProvider] = useState<ImageProviderId>('openai')
   const [imageModel, setImageModel] = useState<ImageModelId>('gpt-image-1')
+  const [apiKey, setApiKey] = useState('')
+  const [showApiKey, setShowApiKey] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('openai-api-key')
+    if (saved) setApiKey(saved)
+  }, [])
+
+  const handleApiKeyChange = useCallback((value: string) => {
+    setApiKey(value)
+    if (value) {
+      localStorage.setItem('openai-api-key', value)
+    } else {
+      localStorage.removeItem('openai-api-key')
+    }
+  }, [])
 
   useEffect(() => {
     setMaskDataUrl(null)
@@ -664,20 +694,20 @@ export function ExtensionDesignLab({
         [key]: { status: 'loading', imageDataUrl: null, text: '', error: '' },
       }))
       try {
-        const sourceImageUrl = /^https?:\/\//i.test(baseImageUrl) ? baseImageUrl : undefined
-        const sourceImageDataUrl = sourceImageUrl ? undefined : await fetchImageAsDataUrl(baseImageUrl)
+        // Always convert to PNG data URL to avoid AVIF/WebP format rejection by OpenAI
+        const sourceImageDataUrl = await fetchImageAsDataUrl(baseImageUrl)
         const res = await fetch('/api/fashion-image-edit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'image_edit',
             prompt,
-            sourceImageUrl,
             sourceImageDataUrl,
             maskImageDataUrl: maskActive ? maskDataUrl : undefined,
             referenceImages,
             provider: imageProvider,
             model: imageModel,
+            apiKey: apiKey || undefined,
           }),
         })
         const data = (await res.json()) as {
@@ -710,7 +740,7 @@ export function ExtensionDesignLab({
         }))
       }
     },
-    [baseImageUrl, imageModel, imageProvider, maskActive, maskDataUrl],
+    [baseImageUrl, imageModel, imageProvider, maskActive, maskDataUrl, apiKey],
   )
 
   return (
@@ -847,6 +877,34 @@ export function ExtensionDesignLab({
           当前模型：<span className="font-medium text-foreground">{imageModel}</span> ·{' '}
           {IMAGE_MODEL_OPTIONS.find((item) => item.id === imageModel)?.note}
         </p>
+        <div className="space-y-1.5">
+          <label className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
+            <Key className="size-3" />
+            OpenAI API Key
+          </label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type={showApiKey ? 'text' : 'password'}
+                value={apiKey}
+                onChange={(e) => handleApiKeyChange(e.target.value)}
+                placeholder="sk-..."
+                className="w-full text-[11px] rounded-lg border border-border bg-background px-2.5 py-2 pr-8 font-mono placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+              <button
+                type="button"
+                onClick={() => setShowApiKey((v) => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label={showApiKey ? '隐藏' : '显示'}
+              >
+                {showApiKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+              </button>
+            </div>
+          </div>
+          <p className="text-[9px] text-muted-foreground">
+            Key 仅存在浏览器本地，不会上传存储。用于调用 OpenAI 图像编辑 API 生成效果图。
+          </p>
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-4 space-y-3">

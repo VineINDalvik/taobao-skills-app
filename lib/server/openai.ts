@@ -36,8 +36,8 @@ export async function resolveOpenAiApiKey(): Promise<string> {
   throw new Error('OPENAI_API_KEY 未设置，且未能从本机提供的 call_gpt.py 中解析到 key')
 }
 
-export async function openAiJson<T>(path: string, body: unknown): Promise<T> {
-  const apiKey = await resolveOpenAiApiKey()
+export async function openAiJson<T>(path: string, body: unknown, clientApiKey?: string): Promise<T> {
+  const apiKey = clientApiKey?.trim() || (await resolveOpenAiApiKey())
   let res: Response
   try {
     res = await fetch(`https://api.openai.com${path}`, {

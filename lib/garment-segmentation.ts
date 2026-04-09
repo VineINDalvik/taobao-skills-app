@@ -102,6 +102,21 @@ export async function buildForegroundCutoutDataUrl(
  * 使用「白 RGB + α=前景强度」：浏览器对 mask 默认按 **alpha** 通道裁切叠层。
  * 若写成灰度图且 α 全为 255，则整块叠色/图案层都会显示，看起来像「整图生效」。
  */
+/**
+ * 将任意格式图片（含 AVIF/WebP 等 removeBackground 不支持的格式）
+ * 通过 canvas 转为 PNG data URL，确保分割库能正常处理。
+ */
+async function toCanvasPngDataUrl(src: string): Promise<string> {
+  const img = await loadImageElement(src)
+  const canvas = document.createElement('canvas')
+  canvas.width = img.naturalWidth
+  canvas.height = img.naturalHeight
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('canvas 2d context unavailable')
+  ctx.drawImage(img, 0, 0)
+  return canvas.toDataURL('image/png')
+}
+
 export async function buildForegroundMaskDataUrl(
   imageSrc: string,
   onProgress?: GarmentSegmentProgress,
@@ -109,8 +124,10 @@ export async function buildForegroundMaskDataUrl(
   if (typeof window === 'undefined') return null
 
   try {
+    // 先将图片转为 PNG data URL，避免 AVIF/WebP 等格式不被分割库支持
+    const pngDataUrl = await toCanvasPngDataUrl(imageSrc)
     const { removeBackground } = await import('@imgly/background-removal')
-    const blob = await removeBackground(imageSrc, {
+    const blob = await removeBackground(pngDataUrl, {
       model: 'isnet_quint8',
       progress: onProgress,
     })
